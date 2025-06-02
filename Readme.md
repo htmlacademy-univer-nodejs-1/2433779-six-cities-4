@@ -10,8 +10,6 @@ _`.editorconfig`, `.gitattributes`, `.gitignore`._
 
 ---
 
-
-
 ## Памятка
 
 
