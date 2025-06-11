@@ -22,7 +22,7 @@ const FIRST_WEEK_DAY = 1;
 const LAST_WEEK_DAY = 7;
 
 export class TsvOfferGenerator implements OfferGenerator {
-  constructor(private readonly mockData: MockServerData) { }
+  constructor(private readonly mockData: MockServerData) {}
 
   private generateRandomDate(): string {
     return dayjs()
@@ -56,6 +56,7 @@ export class TsvOfferGenerator implements OfferGenerator {
 
     const commentCount = 0;
     const [latitude, longitude] = getRandomItem(this.mockData.coordinates);
+
     return [
       title,
       description,

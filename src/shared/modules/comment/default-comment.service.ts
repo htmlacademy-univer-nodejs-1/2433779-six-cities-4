@@ -21,7 +21,7 @@ export class DefaultCommentService implements CommentService {
 
     @inject(Component.OfferModel)
     private readonly offerModel: types.ModelType<OfferEntity>
-  ) { }
+  ) {}
 
   public async create(dto: CreateCommentDto): Promise<DocumentType<CommentEntity>> {
     const comment = await this.commentModel.create(dto);

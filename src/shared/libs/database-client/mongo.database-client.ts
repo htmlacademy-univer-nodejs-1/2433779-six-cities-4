@@ -16,7 +16,7 @@ export class MongoDatabaseClient implements DatabaseClient {
 
   constructor(
     @inject(Component.Logger) private readonly logger: Logger
-  ) { }
+  ) {}
 
   public isConnectedToDatabase(): boolean {
     return this.isConnected;
@@ -56,3 +56,4 @@ export class MongoDatabaseClient implements DatabaseClient {
     this.logger.info('Database connection closed.');
   }
 }
+

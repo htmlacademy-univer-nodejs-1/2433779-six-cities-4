@@ -9,7 +9,7 @@ import { createSHA256 } from '../../helpers/hash.js';
 import { User } from '../../types/index.js';
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
-export interface UserEntity extends defaultClasses.Base { }
+export interface UserEntity extends defaultClasses.Base {}
 
 @modelOptions({
   schemaOptions: {
@@ -45,9 +45,11 @@ export class UserEntity extends defaultClasses.TimeStamps {
   public getPassword() {
     return this.password;
   }
-}
 
-console.log('>>> name type:', Reflect.getMetadata('design:type', UserEntity.prototype, 'name'));
-console.log('>>> email type:', Reflect.getMetadata('design:type', UserEntity.prototype, 'email'));
+  public verifyPassword(password: string, salt: string) {
+    const hashPassword = createSHA256(password, salt);
+    return hashPassword === this.password;
+  }
+}
 
 export const UserModel = getModelForClass(UserEntity);

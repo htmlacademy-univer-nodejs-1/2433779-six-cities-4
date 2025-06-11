@@ -8,7 +8,7 @@ import { Component } from '../../types/index.js';
 export class DefaultFavoriteService implements FavoriteService {
   constructor(
     @inject(Component.FavoriteModel) private readonly favoriteModel: types.ModelType<FavoriteEntity>
-  ) { }
+  ) {}
 
   public async add(userId: string, offerId: string): Promise<void> {
     const exists = await this.favoriteModel.exists({ userId, offerId });

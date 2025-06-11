@@ -14,9 +14,11 @@ export class TsvFileReader extends EventEmitter implements FileReader {
       highWaterMark: CHUNK_SIZE,
       encoding: 'utf-8',
     });
+
     let remainingData = '';
     let nextLinePosition = -1;
     let importedRowCount = 0;
+
     for await (const chunk of stream) {
       remainingData += chunk.toString();
       nextLinePosition = remainingData.indexOf('\n');
@@ -33,6 +35,7 @@ export class TsvFileReader extends EventEmitter implements FileReader {
         nextLinePosition = remainingData.indexOf('\n');
       }
     }
+
     this.emit('end', importedRowCount);
   }
 }

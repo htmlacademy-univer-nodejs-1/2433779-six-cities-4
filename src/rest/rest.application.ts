@@ -6,16 +6,21 @@ import { Component } from '../shared/types/component.enum.js';
 import { DatabaseClient } from '../shared/libs/database-client/index.js';
 import { getMongoURI } from '../shared/helpers/index.js';
 import { Controller, ExceptionFilter } from '../shared/libs/rest/index.js';
+import { ParseTokenMiddleware } from '../shared/libs/rest/middleware/parse-token.middleware.js';
 
 @injectable()
 export class RestApplication {
+  private server: Express;
+
   constructor(
     @inject(Component.Logger) private readonly logger: Logger,
     @inject(Component.Config) private readonly config: Config<RestSchema>,
     @inject(Component.DatabaseClient) private readonly databaseClient: DatabaseClient,
     @inject(Component.UserController) private readonly userController: Controller,
     @inject(Component.OfferController) private readonly offerController: Controller,
-    @inject(Component.ExceptionFilter) private readonly exceptionFilter: ExceptionFilter
+    @inject(Component.ExceptionFilter) private readonly exceptionFilter: ExceptionFilter,
+    @inject(Component.CommentController) private readonly commentController: Controller,
+    @inject(Component.AuthExceptionFilter) private readonly authExceptionFilter: ExceptionFilter,
   ) {
     this.server = express();
   }
@@ -40,15 +45,24 @@ export class RestApplication {
   }
 
   private async initMiddleware(): Promise<void> {
+    const authenticateMiddleware = new ParseTokenMiddleware(this.config.get('JWT_SECRET'));
+
     this.server.use(express.json());
+    this.server.use(
+      '/upload',
+      express.static(this.config.get('UPLOAD_DIRECTORY'))
+    );
+    this.server.use(authenticateMiddleware.execute.bind(authenticateMiddleware));
   }
 
   private async initControllers(): Promise<void> {
     this.server.use('/users', this.userController.router);
     this.server.use('/offers', this.offerController.router);
+    this.server.use('/comments', this.commentController.router);
   }
 
   private async initExceptionFilters(): Promise<void> {
+    this.server.use(this.authExceptionFilter.catch.bind(this.authExceptionFilter));
     this.server.use(this.exceptionFilter.catch.bind(this.exceptionFilter));
   }
 

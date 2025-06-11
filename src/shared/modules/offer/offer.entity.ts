@@ -9,7 +9,7 @@ import { UserEntity } from '../user/index.js';
 import { City, ApartmentType, Amenities } from '../../types/index.js';
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
-export interface OfferEntity extends defaultClasses.Base { }
+export interface OfferEntity extends defaultClasses.Base {}
 
 @modelOptions({
   schemaOptions: {

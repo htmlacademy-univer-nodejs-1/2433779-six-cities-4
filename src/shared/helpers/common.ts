@@ -18,7 +18,6 @@ export function getErrorMessage(error: unknown): string {
   return error instanceof Error ? error.message : 'Unknown error';
 }
 
-
 export function createErrorObject(message: string) {
   return {
     error: message,
