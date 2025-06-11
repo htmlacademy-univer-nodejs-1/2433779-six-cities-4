@@ -6,6 +6,7 @@ import { Logger } from '../../shared/libs/logger/index.js';
 import { MongoDatabaseClient, DatabaseClient } from '../../shared/libs/database-client/index.js';
 import { OfferModel, DefaultOfferService, OfferService } from '../../shared/modules/offer/index.js';
 import { UserModel, DefaultUserService, UserService } from '../../shared/modules/user/index.js';
+import { FavoriteModel } from '../../shared/modules/favorite/index.js';
 import { Offer } from '../../shared/types/index.js';
 import { DEFAULT_DB_PORT, DEFAULT_USER_PASSWORD } from './command.constant.js';
 
@@ -21,7 +22,7 @@ export class ImportCommand implements Command {
     this.onCompleteImport = this.onCompleteImport.bind(this);
 
     this.logger = new ConsoleLogger();
-    this.offerService = new DefaultOfferService(this.logger, OfferModel);
+    this.offerService = new DefaultOfferService(OfferModel, FavoriteModel);
     this.userService = new DefaultUserService(this.logger, UserModel);
     this.databaseClient = new MongoDatabaseClient(this.logger);
   }
@@ -29,7 +30,6 @@ export class ImportCommand implements Command {
   public getName(): string {
     return '--import';
   }
-
 
   public async execute(
     filename: string,
@@ -39,9 +39,6 @@ export class ImportCommand implements Command {
     dbname: string,
     salt: string
   ): Promise<void> {
-    console.log('Starting import with params:', {
-      filename, login, host, dbname, salt
-    });
 
     const uri = getMongoURI(login, password, host, DEFAULT_DB_PORT, dbname);
     this.salt = salt;
@@ -52,6 +49,7 @@ export class ImportCommand implements Command {
 
     fileReader.on('line', this.onImportedLine);
     fileReader.on('end', this.onCompleteImport);
+
     try {
       await fileReader.read();
     } catch (error) {
@@ -81,20 +79,21 @@ export class ImportCommand implements Command {
     );
 
     await this.offerService.create({
+      userId: user.id,
       title: offer.title,
       description: offer.description,
       previewPath: offer.previewPath,
       date: offer.date,
       cost: offer.cost,
       apartmentType: offer.apartmentType,
-      imagePaths: offer.imagePaths,
+      images: offer.images,
       city: offer.city,
       isPremium: offer.isPremium,
       isFavorite: offer.isFavorite,
       rating: offer.rating,
       roomCount: offer.roomCount,
       guestCount: offer.guestCount,
-      amenity: offer.amenity,
+      amenities: offer.amenities,
       author: user.id,
       latitude: offer.latitude,
       longitude: offer.longitude,

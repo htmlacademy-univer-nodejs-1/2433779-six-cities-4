@@ -22,7 +22,7 @@ const FIRST_WEEK_DAY = 1;
 const LAST_WEEK_DAY = 7;
 
 export class TsvOfferGenerator implements OfferGenerator {
-  constructor(private readonly mockData: MockServerData) { }
+  constructor(private readonly mockData: MockServerData) {}
 
   private generateRandomDate(): string {
     return dayjs()
@@ -40,7 +40,7 @@ export class TsvOfferGenerator implements OfferGenerator {
     const date = this.generateRandomDate();
     const city = getRandomItem(this.mockData.cities);
     const previewPath = getRandomItem(this.mockData.previewImages);
-    const imagePaths = getRandomItems(this.mockData.images).join(';');
+    const images = getRandomItems(this.mockData.images).join(';');
     const isPremium = this.generateRandomBoolean();
     const isFavorite = this.generateRandomBoolean();
     const rating = generateRandomValue(1, 5, 1);
@@ -56,13 +56,14 @@ export class TsvOfferGenerator implements OfferGenerator {
 
     const commentCount = 0;
     const [latitude, longitude] = getRandomItem(this.mockData.coordinates);
+
     return [
       title,
       description,
       date,
       city,
       previewPath,
-      imagePaths,
+      images,
       isPremium,
       isFavorite,
       rating,

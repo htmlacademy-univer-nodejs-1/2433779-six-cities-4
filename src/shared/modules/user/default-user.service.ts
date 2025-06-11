@@ -15,7 +15,7 @@ export class DefaultUserService implements UserService {
 
     @inject(Component.UserModel)
     private readonly userModel: types.ModelType<UserEntity>
-  ) { }
+  ) {}
 
   public async create(
     dto: CreateUserDto,
@@ -47,5 +47,10 @@ export class DefaultUserService implements UserService {
     }
 
     return this.create(dto, salt);
+  }
+
+  public async exists(documentId: string): Promise<boolean> {
+    const result = await this.userModel.exists({ _id: documentId });
+    return result !== null;
   }
 }

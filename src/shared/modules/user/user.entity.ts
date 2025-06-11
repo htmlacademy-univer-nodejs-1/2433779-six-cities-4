@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import {
   defaultClasses,
   getModelForClass,
@@ -8,7 +9,7 @@ import { createSHA256 } from '../../helpers/hash.js';
 import { User } from '../../types/index.js';
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
-export interface UserEntity extends defaultClasses.Base { }
+export interface UserEntity extends defaultClasses.Base {}
 
 @modelOptions({
   schemaOptions: {
@@ -19,13 +20,13 @@ export interface UserEntity extends defaultClasses.Base { }
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export class UserEntity extends defaultClasses.TimeStamps {
   @prop({ required: true })
-  public name!: string;
+  public name: string = '';
 
   @prop({ required: true, unique: true })
-  public email!: string;
+  public email: string = '';
 
   @prop({ required: false, default: '' })
-  public avatarPath?: string;
+  public avatarPath?: string = '';
 
   @prop()
   private password?: string;
@@ -43,6 +44,11 @@ export class UserEntity extends defaultClasses.TimeStamps {
 
   public getPassword() {
     return this.password;
+  }
+
+  public verifyPassword(password: string, salt: string) {
+    const hashPassword = createSHA256(password, salt);
+    return hashPassword === this.password;
   }
 }
 
